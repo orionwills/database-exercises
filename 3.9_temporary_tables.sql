@@ -170,3 +170,24 @@ LIMIT 10000;
 
 SELECT * FROM emps;
 
+-- 4. final_final_final
+
+SELECT * FROM employee_z;
+
+DESCRIBE employee_z;
+
+ALTER TABLE employee_z ADD tot_avg_sal decimal(14,4);
+ALTER TABLE employee_z ADD tot_std_dev decimal(14,4);
+ALTER TABLE employee_z ADD z_score decimal(14,4);
+
+SELECT * FROM employee_z LIMIT 5;
+UPDATE employee_z set tot_avg_sal = (SELECT AVG(salary) FROM employees.salaries
+ -- WHERE to_date > NOW()
+);
+UPDATE employee_z set tot_std_dev = (SELECT STDDEV(salary) FROM employees.salaries
+ -- WHERE to_date > NOW()
+);
+UPDATE employee_z set z_score = (salary - tot_avg_sal) / tot_std_dev;
+SELECT * FROM employee_z LIMIT 5;
+
+SELECT dept_name, avg(z_score) FROM employee_z JOIN employees.departments USING(dept_no) GROUP BY dept_name;
